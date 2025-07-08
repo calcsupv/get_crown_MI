@@ -9,6 +9,7 @@
   }
   canvas {
     position:fixed; top:0; left:0; z-index:0;
+    background: black;
     image-rendering: pixelated;
   }
 </style>
@@ -42,6 +43,8 @@
     div._blur = 5 + Math.random() * 10;
     div._saturate = 3000;
     div._invert = Math.random() > 0.5 ? 1 : 0;
+    div.style.transformOrigin = 'center center';
+    div.style.willChange = 'transform, filter';
     layers.push(div);
     document.body.appendChild(div);
   }
@@ -56,6 +59,8 @@
     const offsetX = Math.sin(shake) * 15;
     const offsetY = Math.cos(shake) * 15;
     ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, w, h);
     for(let i=0; i<1500; i++) {
       const hue = (Math.random()*360 + shake*10) % 360;
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
@@ -76,7 +81,7 @@
       if(div._saturate < 1000) div._saturate = 1000;
       if(div._saturate > 5000) div._saturate = 5000;
       div._invert = div._invert === 1 ? 0 : 1;
-      div.style.transform = `rotate(${div._angle}deg) scale(${1 + Math.sin(div._angle*Math.PI/180)*0.5})`;
+      div.style.transform = `rotate(${div._angle}deg) scale(20)`;
       div.style.filter = `
         blur(${div._blur}px)
         saturate(${div._saturate}%)
