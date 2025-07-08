@@ -2,28 +2,19 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-
 <style>
   html, body {
-    margin: 0; padding: 0; overflow: hidden; background: black;
-    width: 100vw; height: 100vh;
-  }
-  #overlay {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: black;
-    z-index: 9999;
-    pointer-events: none;
+    margin:0; padding:0; overflow:hidden; background:black;
+    width:100vw; height:100vh;
   }
   canvas {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: 0;
+    position:fixed; top:0; left:0; z-index:0;
+    background: black;
+    image-rendering: pixelated;
   }
 </style>
 </head>
 <body>
-<div id="overlay"></div>
 <canvas id="canvas"></canvas>
 <script>
   const canvas = document.getElementById("canvas");
@@ -52,6 +43,8 @@
     div._blur = 5 + Math.random() * 10;
     div._saturate = 3000;
     div._invert = Math.random() > 0.5 ? 1 : 0;
+    div.style.transformOrigin = 'center center';
+    div.style.willChange = 'transform, filter';
     layers.push(div);
     document.body.appendChild(div);
   }
@@ -88,7 +81,7 @@
       if(div._saturate < 1000) div._saturate = 1000;
       if(div._saturate > 5000) div._saturate = 5000;
       div._invert = div._invert === 1 ? 0 : 1;
-      div.style.transform = `rotate(${div._angle}deg) scale(${20})`;
+      div.style.transform = `rotate(${div._angle}deg) scale(20)`;
       div.style.filter = `
         blur(${div._blur}px)
         saturate(${div._saturate}%)
