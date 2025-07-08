@@ -2,23 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
+
 <style>
   html, body {
-    margin: 0; padding: 0; overflow: hidden; 
+    margin: 0; padding: 0; overflow: hidden; background: black;
     width: 100vw; height: 100vh;
-    background: black;
-  }
-  #black-bg {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: black;
-    z-index: 0;
-    pointer-events: none;
-  }
-  canvas {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: 1;
   }
   #overlay {
     position: fixed; top: 0; left: 0;
@@ -27,20 +15,22 @@
     z-index: 9999;
     pointer-events: none;
   }
+  canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+  }
 </style>
 </head>
 <body>
-  <div id="black-bg"></div>
-  <canvas id="canvas"></canvas>
-  <div id="overlay"></div>
-
+<div id="overlay"></div>
+<canvas id="canvas"></canvas>
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   let w = canvas.width = window.innerWidth;
   let h = canvas.height = window.innerHeight;
   const layers = [];
-
   function addCrazyLayer() {
     const div = document.createElement('div');
     div.style.position = 'absolute';
@@ -58,7 +48,6 @@
       hsl(${(Math.random()*360+240)%360},100%,50%) 300deg 360deg
     )`;
     div.style.mixBlendMode = 'difference';
-    div.style.zIndex = '2';
     div._angle = 0;
     div._blur = 5 + Math.random() * 10;
     div._saturate = 3000;
@@ -66,12 +55,10 @@
     layers.push(div);
     document.body.appendChild(div);
   }
-
   function spamLayersLoop() {
     for(let i=0; i<5; i++) addCrazyLayer();
     setTimeout(spamLayersLoop, 5);
   }
-
   let shake = 0;
   function heavyDraw() {
     ctx.clearRect(0, 0, w, h);
@@ -90,7 +77,6 @@
     }
     requestAnimationFrame(heavyDraw);
   }
-
   function animateLayers() {
     layers.forEach(div => {
       div._angle += 5 + Math.random()*10;
@@ -102,7 +88,7 @@
       if(div._saturate < 1000) div._saturate = 1000;
       if(div._saturate > 5000) div._saturate = 5000;
       div._invert = div._invert === 1 ? 0 : 1;
-      div.style.transform = `rotate(${div._angle}deg) scale(20)`;
+      div.style.transform = `rotate(${div._angle}deg) scale(${20})`;
       div.style.filter = `
         blur(${div._blur}px)
         saturate(${div._saturate}%)
@@ -113,11 +99,9 @@
     });
     requestAnimationFrame(animateLayers);
   }
-
   heavyDraw();
   spamLayersLoop();
   animateLayers();
-
   window.addEventListener('resize', () => {
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
