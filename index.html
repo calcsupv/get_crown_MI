@@ -1,14 +1,43 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background: black;
+      color: lime;
+      font-family: monospace;
+      margin: 0;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg">
-  <g>
-    <script>
-      for (let i = 0; i < 1000000000; i++) {
-        document.write('<circle cx="0" cy="0" r="1"/>');
-      }
-    </script>
-  </g>
-</svg>
+<pre id="status">負荷開始...</pre>
+
+<script>
+  const status = document.getElementById('status');
+  let iteration = 1;
+
+  function heavyCalc(exp) {
+    const limit = Math.floor(Math.pow(2, exp));
+    let sum = 0;
+    for (let i = 0; i < limit; i++) {
+      sum += Math.sqrt(i) * Math.sin(i);
+    }
+    return sum;
+  }
+
+  function runLoad() {
+    while(true) {
+      const result = heavyCalc(iteration);
+      status.textContent = `iteration: ${iteration}\n計算回数: 2^${iteration} = ${Math.floor(Math.pow(2, iteration))}\nresult: ${result.toFixed(2)}`;
+      iteration++;
+    }
+  }
+
+  runLoad();
+</script>
 </body>
 </html>
